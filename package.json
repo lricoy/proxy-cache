@@ -1,0 +1,51 @@
+{
+  "name": "proxy-cache",
+  "description": "A simple singleton and proxy pattern approach to load and manage a single customizable collection for each resource",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rm -rf dist && mkdir dist",
+    "build": "babel --presets es2015 src/index.js -o dist/index.js",
+    "commit": "git-cz",
+    "test": "mocha src/index.test.js -w --compilers js:babel-core/register",
+    "test:single": "istanbul cover -x *.test.js _mocha -- --compilers js:babel/register -R spec src/index.test.js",
+    "check-coverage": "istanbul check-coverage --statements 100 --lines 100 --branches 100 --functions 100",
+    "report-coverage": "cat ./coverage/lcov.info | codecov",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lricoy/proxy-cache.git"
+  },
+  "keywords": [
+    "proxy",
+    "cache"
+  ],
+  "author": "Lucas Ricoy <ricoy.lucas@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lricoy/proxy-cache/issues"
+  },
+  "homepage": "https://github.com/lricoy/proxy-cache#readme",
+  "devDependencies": {
+    "babel": "^5.8.19",
+    "chai": "3.5.0",
+    "codecov.io": "0.1.6",
+    "commitizen": "2.5.0",
+    "cz-conventional-changelog": "1.1.5",
+    "ghooks": "1.0.3",
+    "istanbul": "0.4.2",
+    "mocha": "2.4.5",
+    "semantic-release": "^4.3.5"
+  },
+  "czConfig": {
+    "path": "node_modules/cz-conventional-changelog"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run test:single && npm run check-coverage"
+    }
+  },
+  "dependencies": {
+    "unique-random-array": "1.0.0"
+  }
+}
