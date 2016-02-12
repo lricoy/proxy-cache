@@ -1,5 +1,6 @@
 {
-  "name": "cache",
+  "name": "collection-sync-cache",
+  "version": "1.0.0-semantic-released",
   "description": "A simple singleton approach to load and manage a single customizable collection for a resource",
   "main": "dist/index.js",
   "scripts": {
