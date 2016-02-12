@@ -1,4 +1,6 @@
 "use strict";
+let proxyCount = 0;
+let proxies = {};
 
 module.exports = {
     Cache: Cache
@@ -20,7 +22,28 @@ function Cache () {
         hash: {}
     };
 
-    //TODO: ADD PRE SYNC MODIFIERS
+    /**
+     * Middlewares to handle pre and post sync operations
+     */
+
+    this._pres = [];
+    /**
+     * Add a preSync function to be applied on the objects
+     * @param func Function that receives and return a single object
+     */
+    this.preSync = (func) => {
+        this._pres.push(func);
+    };
+
+    this._posts = [];
+
+    /**
+     * Add a postSync function to be called after the object is synchronized
+     * @param func
+     */
+    this.postSync = (func) => {
+        this._posts.push(func);
+    };
 
 
     /**
@@ -30,6 +53,11 @@ function Cache () {
      * @returns void
      */
     this.syncObj = function syncObj(objToSync) {
+
+        // Apply the preSync middlewares
+        this._pres.map((f) => { objToSync = f(objToSync); });
+
+        // Check if the object already exists on the list
         if(typeof this._objs.hash[objToSync._id] !== 'undefined') {
             // Sanity check to maintain the __index. TO-DO: Find the index if undefined
             objToSync.__index = this._objs.hash[objToSync._id].__index;
@@ -39,7 +67,12 @@ function Cache () {
             objToSync.__index = this._objs.list.length;
             this._objs.list.push(objToSync);
         }
+
+        // Add/Overwrite the object to the hash
         this._objs.hash[objToSync._id] = objToSync;
+
+        // Apply the postSync middlewares
+        this._posts.map((f) => { f(objToSync); });
     };
 
     /**
@@ -62,7 +95,7 @@ function Cache () {
      * @returns void
      */
     this.syncMultipleObjs = function syncMultipleObjs(objsToSync) {
-        objsToSync.map(function(x){
+        objsToSync.map((x) => {
             self.syncObj(x);
         });
     };
