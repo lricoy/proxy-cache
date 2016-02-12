@@ -1,6 +1,6 @@
 {
-  "name": "proxy-cache",
-  "description": "A simple singleton and proxy pattern approach to load and manage a single customizable collection for each resource",
+  "name": "cache",
+  "description": "A simple singleton approach to load and manage a single customizable collection for a resource",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist && mkdir dist",
