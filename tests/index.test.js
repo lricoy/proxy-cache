@@ -2,8 +2,8 @@
 
 import * as chai from 'chai';
 import {Promise} from 'when';
-import {Cache} from './cache';
-import {Proxy} from './proxy';
+import {Cache} from './../src/cache';
+import {Proxy} from './../src/proxy';
 
 // Define expect
 let expect = chai.expect;

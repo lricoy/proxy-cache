@@ -1,6 +1,5 @@
 import {Cache} from './cache';
 import * as when from 'when';
-exports.Proxy = Proxy;
 
 var proxyCount = 0;
 /**
@@ -56,3 +55,5 @@ function Proxy(resourceService, options){
     // TO-DO: Add socket synchronization, filter options and onSync() exports
 
 }
+
+export {Proxy};
