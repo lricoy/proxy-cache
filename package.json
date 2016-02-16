@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "rm -rf dist && mkdir dist && mkdir dist/bundle",
     "build": "babel --presets es2015 ./src --out-dir ./dist && npm run bundle",
-    "bundle": "browserify -t [ babelify --presets [ es2015 ] ] --full-paths -g uglifyify src/index.js > dist/bundle/bundle.min.js",
+    "bundle": "browserify -t [ babelify --presets [ es2015 ] ] -g uglifyify src/index.js > dist/bundle/bundle.min.js",
     "precommit": "npm run build && git add -A",
     "commit": "git-cz",
     "test": "mocha tests/index.test.js -w --compilers js:babel-core/register",
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/lricoy/proxy-cache/issues"
   },
-  "homepage": "https://github.com/lricoy/proxy-cache#readme",
+  "homepage": "https://github.com/gilricoy/proxy-cache#readme",
   "devDependencies": {
     "babel": "^5.8.19",
     "babel-preset-es2015": "6.5.0",
