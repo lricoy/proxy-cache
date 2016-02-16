@@ -1,10 +1,20 @@
 'use strict';
 
-import {expect} from  'chai';
-import {Cache} from './index';
+import * as chai from 'chai';
+import {Promise} from 'when';
+import {Cache} from './cache';
+import {Proxy} from './proxy';
+
+// Define expect
+let expect = chai.expect;
+
+// Tell chai to use sionChai
+let sinon = require('sinon');
+let sinonChai = require('sinon-chai');
+chai.use(sinonChai);
 
 describe('Cache', function () {
-    var cache;
+    let cache;
 
     beforeEach(function() {
         // runs before each test in this block
@@ -120,6 +130,96 @@ describe('Cache', function () {
         });
         cache.syncObj({_id: 1});
     });
+});
+
+describe('Proxy', () => {
+    let proxy;
+
+    beforeEach(function() {
+        // runs before each test in this block
+
+        // Mocks the resource Fetcher
+        var resourceFetcher = {
+          query: (options) => {
+              return {
+                  $promise: {
+                      then: function (cb) {
+                          cb([{_id: 1}, {_id:2}]);
+                      }
+                  }
+              }
+          },
+            get: (options) => {
+                return {
+                    $promise: {
+                        then: function (cb) {
+                            cb({_id: 1});
+                        }
+                    }
+                }
+            }
+        };
+        proxy = new Proxy(resourceFetcher);
+    });
+
+    it('should instantiate a object of type Proxy', () => {
+       expect(proxy).to.be.a('object');
+        expect(proxy).to.be.an.instanceOf(Proxy);
+    });
+
+    it('should instantiate without the need to use `new`', function(){
+        expect(Proxy()).to.be.instanceOf(Proxy);
+    });
+
+    it('should have a cache', () => {
+        expect(proxy.cache).to.be.a('object');
+        expect(proxy.cache).to.be.an.instanceOf(Cache);
+    });
+
+
+    describe('.query', () => {
+
+        // This will only be a mock. The resource Fetcher is the one responsbile for the tests.
+        it('should query using the assigned resource fetcher', () => {
+            return proxy.query().then((objs) => {
+                expect(proxy.cache.getObjList().length).to.equal(2);
+            });
+        });
+
+        it('should return a promise', () => {
+            expect(proxy.query()).to.be.instanceOf(Promise);
+        });
+
+
+    });
+
+    describe('.findOneById', () => {
+
+        // This will only be a mock. The resource Fetcher is the one responsbile for the tests.
+        it('should query a single item if new', () => {
+            return proxy.findOneById(1).then((obj) => {
+                expect(obj._id).to.equal(1);
+            });
+        });
+
+        it('Should not query for a existing item', () => {
+            var mock = sinon.spy(proxy.resourceFetcher.get);
+
+            proxy.cache.syncObj({_id:1});
+            return proxy.findOneById(1).then((obj) => {
+                expect(obj._id).to.equal(1);
+                expect(mock).to.have.callCount(0);
+            });
+
+        });
+
+        it('should return a promise', () => {
+            expect(proxy.findOneById()).to.be.instanceOf(Promise);
+        });
+
+
+    });
+
 });
 
 

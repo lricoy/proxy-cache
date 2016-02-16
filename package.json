@@ -36,7 +36,9 @@
     "ghooks": "1.0.3",
     "istanbul": "0.4.2",
     "mocha": "2.4.5",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "sinon": "1.17.3",
+    "sinon-chai": "2.8.0"
   },
   "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
@@ -47,6 +49,6 @@
     }
   },
   "dependencies": {
-    "unique-random-array": "1.0.0"
+    "when": "3.7.7"
   }
 }
