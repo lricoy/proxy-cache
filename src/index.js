@@ -5,5 +5,5 @@ let proxies = {};
 import {Cache} from './cache';
 import {Proxy} from './proxy';
 
-export {Proxy, Cache};
+module.exports = {Proxy:Proxy, Cache: Cache};
 
