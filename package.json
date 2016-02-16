@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "rm -rf dist && mkdir dist",
     "build": "babel --presets es2015 src/index.js -o dist/index.js",
+    "precommit": "npm run build && git add -A",
     "commit": "git-cz",
     "test": "mocha src/index.test.js -w --compilers js:babel-core/register",
     "test:single": "istanbul cover -x *.test.js _mocha -- --compilers js:babel/register -R spec src/index.test.js",
