@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "rm -rf dist && mkdir dist && mkdir dist/bundle",
     "build": "babel --presets es2015 ./src --out-dir ./dist && npm run bundle",
-    "bundle": "browserify  -t [ babelify --presets [ es2015 ] ] src/index.js --standalone ProxyCache > dist/bundle/proxy-cache.min.js",
+    "bundle": "browserify  -t [ babelify --presets [ es2015 ] ] -r ./src/index.js:proxy-cache > dist/bundle/proxy-cache.min.js",
     "precommit": "npm run build && git add -A",
     "commit": "git-cz",
     "test": "mocha tests/index.test.js -w --compilers js:babel-core/register",
