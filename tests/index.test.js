@@ -133,13 +133,13 @@ describe('Cache', function () {
 });
 
 describe('Proxy', () => {
-    let proxy;
+    let proxy, resourceFetcher, socket;
 
     beforeEach(function() {
         // runs before each test in this block
 
         // Mocks the resource Fetcher
-        var resourceFetcher = {
+        resourceFetcher = {
           query: (options) => {
               return {
                   $promise: {
@@ -159,6 +159,15 @@ describe('Proxy', () => {
                 }
             }
         };
+
+        // Mocks the socket
+        socket = {
+            cbs: [],
+            on: function(evName, cb){ this.cbs.push({ evName: evName, cb:cb}); },
+            emit: function(evName, obj) { this.cbs.map(f => { if(evName === f.evName) f.cb(obj) }); }
+        };
+
+        // Creates a brand-new proxy
         proxy = new Proxy(resourceFetcher);
     });
 
@@ -174,6 +183,56 @@ describe('Proxy', () => {
     it('should have a cache', () => {
         expect(proxy.cache).to.be.a('object');
         expect(proxy.cache).to.be.an.instanceOf(Cache);
+    });
+
+    describe('#options socket', () => {
+        it('should assign a socket with the modelName if one is passed', () => {
+            let newProxy = new Proxy(resourceFetcher, {
+                socket: {
+                    modelName: 'test',
+                    socket: socket
+                }
+            });
+            expect(newProxy.socket).to.be.a('object');
+        });
+
+        it('should sync a object to the cache after a socket.emit()', () => {
+            let newProxy = new Proxy(resourceFetcher, {
+                socket: {
+                    modelName: 'test',
+                    socket: socket
+                }
+            });
+            socket.emit('test:save', {_id: 1});
+            expect(newProxy.cache.getObjList().length).to.equal(1);
+        });
+
+        it('should not push the same _id even from the socket', () => {
+            let newProxy = new Proxy(resourceFetcher, {
+                socket: {
+                    modelName: 'test',
+                    socket: socket
+                }
+            });
+            socket.emit('test:save', {_id: 1});
+            socket.emit('test:save', {_id: 2});
+            socket.emit('test:save', {_id: 3});
+            socket.emit('test:save', {_id: 1});
+            expect(newProxy.cache.getObjList().length).to.equal(3);
+        });
+
+        it('should remove the object if socket:remove', () => {
+            let newProxy = new Proxy(resourceFetcher, {
+                socket: {
+                    modelName: 'test',
+                    socket: socket
+                }
+            });
+            socket.emit('test:save', {_id: 1});
+            socket.emit('test:remove', {_id: 1});
+            expect(newProxy.cache.getObjList().length).to.equal(0);
+        });
+
     });
 
 

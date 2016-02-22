@@ -6,9 +6,16 @@ var proxyCount = 0;
  * Builds an generic Proxy that has an internal caching mechanism
  * @param  {Resource} resourceService The angular $resource or equivalent to fetch the external data
  * @param  {Object} options Options that describe how to build the proxy
+ * Current options:
+ * {Object} socket: {
+ *   modelName: {String},
+ *   socket: {Object} Socket event emitter/receiver
+ * }
  */
 function Proxy(resourceService, options){
-    if(typeof options === 'undefined') { options = {}; }
+    if ('undefined' === typeof options) {
+        options = {};
+    }
 
     if (!(this instanceof Proxy)) {
         return new Proxy(resourceService, options);
@@ -18,6 +25,12 @@ function Proxy(resourceService, options){
     this.cache = new Cache();
     this.resourceFetcher = resourceService;
     this.proxyId = proxyCount++;
+
+    if('undefined' !== typeof options.socket) {
+        this.socket = options.socket.socket;
+        this.socket.on(`${options.socket.modelName}:save`, obj => { this.cache.syncObj(obj) });
+        this.socket.on(`${options.socket.modelName}:remove`, obj => { this.cache.removeObj(obj) });
+    }
 
     this.query = (options) => {
 
