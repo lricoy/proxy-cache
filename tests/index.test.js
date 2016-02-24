@@ -4,6 +4,7 @@ import * as chai from 'chai';
 import {Promise} from 'when';
 import {Cache} from './../src/cache';
 import {Proxy} from './../src/proxy';
+import Bucket from './../src/bucket';
 
 // Define expect
 let expect = chai.expect;
@@ -302,5 +303,71 @@ describe('Proxy', () => {
     });
 
 });
+describe('Bucket', () => {
 
+  let bucket;
 
+  beforeEach(function() {
+    bucket = new Bucket();
+  });
+
+  it('should add a new proxy to the Bucket', () =>{
+    let proxy = new Proxy();
+    bucket.addProxy('myProxy', proxy);
+
+    expect(bucket.hasProxy('myProxy')).to.equal(true);
+  });
+
+  it('should not overwrite an existing proxyt', () =>{
+    let proxy = new Proxy();
+    bucket.addProxy('myProxy', proxy);
+    bucket.addProxy('myProxy', proxy);
+
+    expect(bucket.hasProxy('myProxy')).to.equal(true);
+    expect(bucket.count).to.equal(1);
+  });
+
+  it('should return the proxy by reference', () =>{
+    let proxy = new Proxy();
+    bucket.addProxy('myProxy', proxy);
+
+    expect(bucket.hasProxy('myProxy')).to.equal(true);
+    expect(bucket.getProxy('myProxy')).to.equal(proxy);
+  });
+
+  it('should not share proxies between buckets instances', () =>{
+    let proxy, proxy2, bucket2;
+    proxy = new Proxy();
+    proxy2 = new Proxy();
+    bucket2 = new Bucket();
+
+    bucket.addProxy('myProxy', proxy);
+    bucket2.addProxy('myProxy', proxy);
+    bucket2.addProxy('myProxy2', proxy2);
+
+    expect(bucket.hasProxy('myProxy')).to.equal(true);
+    expect(bucket.getProxy('myProxy')).to.equal(proxy);
+    expect(bucket.hasProxy('myProxy2')).to.equal(false);
+    expect(bucket.count).to.equal(1);
+
+    expect(bucket2.hasProxy('myProxy')).to.equal(true);
+    expect(bucket2.getProxy('myProxy')).to.equal(proxy);
+    expect(bucket2.hasProxy('myProxy2')).to.equal(true);
+    expect(bucket2.getProxy('myProxy2')).to.equal(proxy2);
+    expect(bucket2.count).to.equal(2);
+  });
+
+  it('should export a singleton instance from a static method', () => {
+    let bucket1, bucket2, proxy;
+
+    proxy = new Proxy();
+    bucket1 = Bucket.getSingleton();
+    bucket2 = Bucket.getSingleton();
+    bucket1.addProxy('myProxy', proxy);
+
+    expect(bucket1).to.equal(bucket2);
+    expect(bucket1.count).to.equal(1);
+    expect(bucket2.count).to.equal(1);
+  });
+
+});
