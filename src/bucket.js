@@ -1,5 +1,11 @@
 let singletonInstance = null;
 
+/**
+ * Represents a Bucket.
+ * A Bucket can hold multiple proxies in a similar way to a cache
+ * The main purpose of the Bucket is to be a simple way to access proxies
+ * shared throught the application
+ */
 class Bucket {
 
   constructor(){
@@ -44,6 +50,11 @@ class Bucket {
     }
   }
 
+  /**
+   * Gets a *singleton* Bucket Instance for commodity
+   * @returns {Bucket}
+   * @static
+   */
   static getSingleton() {
     if(!singletonInstance) {
       singletonInstance = new Bucket();

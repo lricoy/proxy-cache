@@ -10,6 +10,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var singletonInstance = null;
 
+/**
+ * Represents a Bucket.
+ * A Bucket can hold multiple proxies in a similar way to a cache
+ * The main purpose of the Bucket is to be a simple way to access proxies
+ * shared throught the application
+ */
+
 var Bucket = (function () {
   function Bucket() {
     _classCallCheck(this, Bucket);
@@ -60,6 +67,12 @@ var Bucket = (function () {
         console.warn('Proxy instance already exists. No action taken.');
       }
     }
+
+    /**
+     * Gets a *singleton* Bucket Instance for commodity
+     * @returns {Bucket}
+     * @static
+     */
   }], [{
     key: 'getSingleton',
     value: function getSingleton() {
