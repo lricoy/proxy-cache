@@ -1,5 +1,6 @@
 import {Cache} from './cache';
 import * as when from 'when';
+import * as fn from 'when/function';
 
 var proxyCount = 0;
 /**
@@ -46,6 +47,10 @@ function Proxy(resourceService, options){
     };
 
     this.findOneById = (id) => {
+        if(null === id || 'undefined' === typeof id){
+            return fn.call(function(){ return null; })
+        }
+
         let objFound = this.cache.getObj(id);
 
         return when.promise((resolve, reject) => {

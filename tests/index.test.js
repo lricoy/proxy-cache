@@ -301,6 +301,18 @@ describe('Proxy', () => {
             });
         });
 
+        it('should not query undefined items', () => {
+            return proxy.findOneById().then((obj) => {
+                expect(obj).to.equal(null);
+            });
+        });
+
+        it('should not query null items', () => {
+            return proxy.findOneById(null).then((obj) => {
+                expect(obj).to.equal(null);
+            });
+        });
+
         it('Should not query for a existing item', () => {
             var mock = sinon.spy(proxy.resourceFetcher.get);
 

@@ -12,6 +12,10 @@ var _when = require('when');
 
 var when = _interopRequireWildcard(_when);
 
+var _whenFunction = require('when/function');
+
+var fn = _interopRequireWildcard(_whenFunction);
+
 var proxyCount = 0;
 /**
  * Builds an generic Proxy that has an internal caching mechanism
@@ -61,6 +65,12 @@ function Proxy(resourceService, options) {
     };
 
     this.findOneById = function (id) {
+        if (null === id || 'undefined' === typeof id) {
+            return fn.call(function () {
+                return null;
+            });
+        }
+
         var objFound = _this.cache.getObj(id);
 
         return when.promise(function (resolve, reject) {
