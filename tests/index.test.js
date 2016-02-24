@@ -104,6 +104,23 @@ describe('Cache', function () {
 
     });
 
+    describe('.clear', () => {
+
+        it('should clear the whole cache', () => {
+            cache.syncMultipleObjs([{_id: 1}, {_id: 2}, {_id: 3}]);
+
+            expect(cache.getObjList().length).to.equal(3);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(3);
+
+            cache.clear();
+
+            expect(cache.getObjList().length).to.equal(0);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(0);
+        });
+
+
+    });
+
     describe('.preSync', () => {
         it('should modify the object on a preSync middleware',() => {
             cache.preSync(function(obj) {
