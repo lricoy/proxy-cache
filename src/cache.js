@@ -82,7 +82,7 @@ function Cache () {
 
         let existingObj = this.getObj(objToRemove._id);
         if(typeof existingObj !== 'undefined') {
-            this._objs.list.splice(this._objs.hash[existingObj.__index], 1);
+            this._objs.list.splice(this._objs.hash[existingObj._id].__index, 1);
             delete this._objs.hash[existingObj._id];
         }
     };
