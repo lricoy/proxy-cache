@@ -86,10 +86,13 @@ function Cache() {
      * @returns void
      */
     this.removeObj = function removeObj(objToRemove) {
-        if (typeof this._objs.hash[objToRemove._id] !== 'undefined') {
-            this._objs.list.splice(this._objs.hash[objToRemove.index], 1);
+        if ('undefined' === typeof objToRemove) return;
+
+        var existingObj = this.getObj(objToRemove._id);
+        if (typeof existingObj !== 'undefined') {
+            this._objs.list.splice(this._objs.hash[existingObj.__index], 1);
+            delete this._objs.hash[existingObj._id];
         }
-        delete this._objs.hash[objToRemove._id];
     };
 
     /**

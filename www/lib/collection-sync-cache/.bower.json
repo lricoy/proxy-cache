@@ -1,0 +1,37 @@
+{
+  "name": "collection-sync-cache",
+  "description": "A simple singleton approach to load and manage a single customizable collection for a resource",
+  "main": "dist/index.js",
+  "authors": [
+    "Lucas Ricoy <ricoy.lucas@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "proxy",
+    "cache"
+  ],
+  "homepage": "https://github.com/lricoy/proxy-cache",
+  "moduleType": [
+    "es6",
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "www/lib",
+    "test",
+    "tests"
+  ],
+  "version": "1.9.0",
+  "_release": "1.9.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.9.0",
+    "commit": "82797152afcf2d43d9c1fbef4eb4c18a2ce00786"
+  },
+  "_source": "git://github.com/lricoy/proxy-cache.git",
+  "_target": "^1.9.0",
+  "_originalSource": "collection-sync-cache",
+  "_direct": true
+}

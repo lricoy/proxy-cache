@@ -81,8 +81,19 @@ describe('Cache', function () {
 
         it('should do nothing if removing an unexisting object', () => {
             cache.removeObj({_id: 1});
+            cache.removeObj();
             expect(cache.getObjList().length).to.equal(0);
             expect(Object.keys(cache.getObjHash()).length).to.equal(0);
+        });
+
+        it('should remove the item at the correct index', () => {
+            cache.syncMultipleObjs([{_id: 1}, {_id: 2}, {_id: 3}]);
+            cache.removeObj({_id: 2});
+            expect(cache.getObjList().length).to.equal(2);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(2);
+            expect(cache.getObj(1)._id).to.equal(1);
+            expect(cache.getObj(2)).to.equal(undefined);
+            expect(cache.getObj(3)._id).to.equal(3);
         });
     });
 
