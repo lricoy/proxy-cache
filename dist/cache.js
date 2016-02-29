@@ -40,19 +40,23 @@ function Cache() {
      * @param func
      */
     this.postSync = function (func) {
-        _this._posts.push(func);
+        return _this._posts.push(func);
     };
 
     /**
      * Sync a given job object to the list and hash
      *
      * @param {Object} objToSync The job Object to sync. Must have an _id.
+     * @param {Object} middlewareOptions An object containing the middleware options (pre,post)
      * @returns void
      */
-    this.syncObj = function syncObj(objToSync) {
+    this.syncObj = function syncObj(objToSync, middlewareOptions) {
+        if ('undefined' === typeof middlewareOptions) middlewareOptions = {};
+        if ('undefined' === typeof middlewareOptions.usePre) middlewareOptions.usePre = true;
+        if ('undefined' === typeof middlewareOptions.usePost) middlewareOptions.usePost = true;
 
         // Apply the preSync middlewares
-        this._pres.map(function (f) {
+        if (middlewareOptions.usePre) this._pres.map(function (f) {
             objToSync = f(objToSync);
         });
 
@@ -70,7 +74,7 @@ function Cache() {
         this._objs.hash[objToSync._id] = objToSync;
 
         // Apply the postSync middlewares
-        this._posts.map(function (f) {
+        if (middlewareOptions.usePost) this._posts.map(function (f) {
             f(objToSync);
         });
     };
@@ -92,11 +96,16 @@ function Cache() {
      * Sync multiple objs
      *
      * @param {Array} objsToSync Array of job Objects. Each must have an _id field.
+     * @param {Object} middlewareOptions An object containing the middleware options (pre,post)
      * @returns void
      */
-    this.syncMultipleObjs = function syncMultipleObjs(objsToSync) {
+    this.syncMultipleObjs = function syncMultipleObjs(objsToSync, middlewareOptions) {
+        if ('undefined' === typeof middlewareOptions) middlewareOptions = {};
+        if ('undefined' === typeof middlewareOptions.usePre) middlewareOptions.usePre = true;
+        if ('undefined' === typeof middlewareOptions.usePost) middlewareOptions.usePost = true;
+
         objsToSync.map(function (x) {
-            self.syncObj(x);
+            self.syncObj(x, middlewareOptions);
         });
     };
 

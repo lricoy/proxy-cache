@@ -102,6 +102,36 @@ describe('Cache', function () {
             expect(Object.keys(cache.getObjHash()).length).to.equal(3);
         });
 
+        it('should use the pre and post middlewares', () => {
+            cache.preSync(x => { x.customState = 'custom'; return x; });
+            cache.postSync(x => expect(x.customState).to.equal('custom'));
+
+            cache.syncMultipleObjs([{_id: 1}, {_id: 2}, {_id: 3}, {_id: 1}]);
+
+            expect(cache.getObjList().length).to.equal(3);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(3);
+        });
+
+        it('should NOT use the pre middleware', () => {
+            cache.preSync(x => { x.customState = 'custom'; return x; });
+            cache.postSync(x => expect(x.customState).to.equal(undefined));
+
+            cache.syncMultipleObjs([{_id: 1}, {_id: 2}, {_id: 3}, {_id: 1}], {usePre: false, usePost: true});
+
+            expect(cache.getObjList().length).to.equal(3);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(3);
+        });
+
+        it('should NOT use the pre and post middlewares', () => {
+            cache.preSync(x => { x.customState = 'custom'; return x; }); // Wont hit
+            cache.postSync(x => expect(x.customState).to.equal('custom')); // Wont hit
+
+            cache.syncMultipleObjs([{_id: 1}, {_id: 2}, {_id: 3}, {_id: 1}], {usePre: false, usePost: false});
+
+            expect(cache.getObjList().length).to.equal(3);
+            expect(Object.keys(cache.getObjHash()).length).to.equal(3);
+        });
+
     });
 
     describe('.clear', () => {
